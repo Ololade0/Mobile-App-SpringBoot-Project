@@ -6,17 +6,17 @@ import org.springframework.data.annotation.Id;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import java.io.Serializable;
-
 
 @Setter
 @Getter
-@Entity
+@Entity(name = "users")
 public class UserEntity implements Serializable {
     private static final long serialVersionUid = 1L;
     @javax.persistence.Id
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
 
 @Column(nullable = false)

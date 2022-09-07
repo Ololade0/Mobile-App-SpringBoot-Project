@@ -1,6 +1,9 @@
 //package com.example.demo.security;
 //
+////import com.example.demo.SpringApplicationContext;
 //import com.example.demo.dto.request.LoginUserRequest;
+//import com.example.demo.service.UserService;
+//import com.example.demo.shared.dto.UserDto;
 //import com.fasterxml.jackson.databind.ObjectMapper;
 //import io.jsonwebtoken.Jwts;
 //import io.jsonwebtoken.SignatureAlgorithm;
@@ -28,15 +31,17 @@
 //    }
 //
 //@Override
-//    public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException{
+//    public Authentication attemptAuthentication(HttpServletRequest res, HttpServletResponse response)
+//        throws AuthenticationException{
 //        try{
 //            LoginUserRequest creds = new ObjectMapper()
-//                    .readValue(request.getInputStream(),
+//                    .readValue(res.getInputStream(),
 //                    LoginUserRequest.class);
 //
 //            return authenticationManager.authenticate(
 //                    new UsernamePasswordAuthenticationToken(
-//                            creds.getEmailAddress(), creds.getPassword(),
+//                            creds.getEmailAddress(),
+//                            creds.getPassword(),
 //                            new ArrayList<>())
 //            );
 //
@@ -47,15 +52,24 @@
 //        }
 //
 //
-//        protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response,
+//        protected void successfulAuthentication(HttpServletRequest request,
+//                                                HttpServletResponse response,
 //                                                FilterChain chain,
-//                                                Authentication auth) throws IOException, ServletException{
+//                                                Authentication auth)
+//                throws IOException, ServletException{
 //
 //            String userName = ((User)auth.getPrincipal()).getUsername();
-//               String token = Jwts.builder().setSubject(userName).setExpiration(new Date(System.currentTimeMillis() + SecurityConstants.EXPIRATION_TIME))
+//               String token = Jwts.builder().setSubject(userName)
+//                       .setExpiration(new Date(System.currentTimeMillis()
+//                               + SecurityConstants.EXPIRATION_TIME))
 //                        .signWith(SignatureAlgorithm.HS512, SecurityConstants
 //                                .TOKEN_SECRET).compact();
-//                response.addHeader(SecurityConstants.HEADER_STRING, SecurityConstants.TOKEN_PREFIX + token);
+//             // UserService userService = (UserService) SpringApplicationContext.getBean("userServiceImpl");
+//            // UserDto userDto = userService.getUserByEmail(userName);
+//
+//                response.addHeader(SecurityConstants.HEADER_STRING,
+//                        SecurityConstants.TOKEN_PREFIX + token);
+//               // response.addHeader("userID", userDto.getUserId());
 //
 //        }
 //
