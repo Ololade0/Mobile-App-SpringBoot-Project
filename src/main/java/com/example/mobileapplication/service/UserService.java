@@ -8,6 +8,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 public interface UserService extends UserDetailsService   {
 
         UserDto createUser(UserDto user);
+        UserDto getUserByUserId(String userId);
 
         UserDto getUserByEmail(String email) throws UsernameNotFoundException;
 

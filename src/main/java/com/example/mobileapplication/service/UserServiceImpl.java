@@ -8,7 +8,6 @@ import com.example.mobileapplication.exception.UsernameNotFoundException;
 import com.example.mobileapplication.dto.utils.Utils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -44,10 +43,22 @@ import java.util.ArrayList;
     }
 
     @Override
+    public UserDto getUserByUserId(String userId) {
+        UserEntity foundUser = userRepository.findUserById(userId);
+        if(foundUser == null) {
+            throw new UsernameNotFoundException(userId);
+        }
+        UserDto returnValue = new UserDto();
+        BeanUtils.copyProperties(foundUser, returnValue);
+        return returnValue;
+    }
+
+    @Override
     public UserDto getUserByEmail(String email) {
         UserEntity foundUser = userRepository.findByEmail(email);
-        if(foundUser == null)
+        if (foundUser == null){
             throw new UsernameNotFoundException(email);
+    }
         UserDto returnValue = new UserDto();
         BeanUtils.copyProperties(foundUser, returnValue);
         return returnValue;
@@ -78,7 +89,7 @@ import java.util.ArrayList;
     public UserDetails loadUserByUsername(String email) throws org.springframework.security.core.userdetails.UsernameNotFoundException {
         UserEntity foundUser = userRepository.findByEmail(email);
         if(foundUser == null){
-            throw new org.springframework.security.core.userdetails.UsernameNotFoundException(email);
+        throw new org.springframework.security.core.userdetails.UsernameNotFoundException(email);
         }
         return new User(foundUser.getEmail(), foundUser.getEncryptedPassword(), new ArrayList<>());
     }
