@@ -1,5 +1,8 @@
 package com.example.mobileapplication.controller;
 
+import com.example.mobileapplication.dto.request.RequestOperationName;
+import com.example.mobileapplication.dto.response.OperationStatusModel;
+import com.example.mobileapplication.dto.response.RequestOperationStatus;
 import com.example.mobileapplication.exception.ErrorMessage;
 import com.example.mobileapplication.dao.UserDto;
 import com.example.mobileapplication.dto.request.LoginUserRequest;
@@ -12,6 +15,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @RestController
 @RequestMapping("/users")
@@ -43,14 +49,6 @@ public class UserController {
         return returnValue;
     }
 
-//    @GetMapping(path = "/{userId}")
-//    public UserRest getUser(@PathVariable String userId) {
-//        UserDto userDto = userService.getUserById(userId);
-//        UserRest userRest = new UserRest();
-//        BeanUtils.copyProperties(userDto, userRest);
-//        return userRest;
-//
-//    }
     @GetMapping()
     public  UserRest login(LoginUserRequest loginUserRequest){
         UserDto userDto = new UserDto();
@@ -61,5 +59,38 @@ public class UserController {
         return returnValue;
     }
 
+    @PutMapping()
+    public UserRest updateUser(@PathVariable String id, @RequestBody UserDetailsRequestModel userDetailsRequestModel){
+        UserRest returnValue = new UserRest();
+        UserDto userDto = new UserDto();
+        BeanUtils.copyProperties(userDetailsRequestModel, userDto);
+        UserDto createdUser = userService.updateUser(id, userDto);
+
+        BeanUtils.copyProperties(createdUser, returnValue);
+        return returnValue;
+    }
+@DeleteMapping(path = "/{id}")
+    public OperationStatusModel deleteUser(@PathVariable String id){
+        OperationStatusModel returnValue = new OperationStatusModel();
+        returnValue.setOperationName(RequestOperationName.DELETE.name() );
+        userService.deleteUser(id);
+        returnValue.setOperationName(RequestOperationStatus.SUCCESS.name());
+        return returnValue;
+
+}
+    @PostMapping("/getUsers")
+    public List<UserRest> getUser(@RequestParam(value = "page", defaultValue = "1")int page,
+                                  @RequestParam(value = "limit", defaultValue = "25") int limit){
+        List<UserRest> returnValue = new ArrayList<>();
+        List<UserDto> users = userService.getUsers(page, limit);
+        for(UserDto userDto : users){
+            UserRest userModel = new UserRest();
+            BeanUtils.copyProperties(userDto, userModel);
+            returnValue.add(userModel);
+
+        }
+        return returnValue;
+
+    }
 
 }
